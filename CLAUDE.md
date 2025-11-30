@@ -8,19 +8,20 @@ Single formula tap - minimal maintenance, auto-updated by GitHub Actions on stab
 
 ## Files
 
-- `Formula/recyclarr.rb` - Homebrew formula (Ruby DSL)
+- `Formula/recyclarr.rb` - Generated Homebrew formula (do not edit directly)
+- `Formula/recyclarr.rb.template` - Template with `{{VERSION}}` and `{{SHA_*}}` placeholders
+- `scripts/update-formula.sh` - Generates formula from template with fetched hashes
 - `.github/workflows/update-formula.yml` - Auto-update on release dispatch
 
-## Formula Updates
+## Local Development
 
-Triggered via `workflow_dispatch` from main recyclarr repo. Manual updates:
+Update formula locally (fetches hashes from GitHub release):
 
 ```bash
-# Calculate SHA256 for a release
-curl -sL "https://github.com/recyclarr/recyclarr/releases/download/v{VERSION}/recyclarr-{ARCH}.tar.xz" | sha256sum
+./scripts/update-formula.sh 7.5.1
 ```
 
-## Testing
+Test the formula:
 
 ```bash
 brew install --build-from-source ./Formula/recyclarr.rb

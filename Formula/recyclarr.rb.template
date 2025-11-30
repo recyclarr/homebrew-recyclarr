@@ -1,0 +1,36 @@
+class Recyclarr < Formula
+  desc "CLI tool to sync TRaSH Guides to Sonarr/Radarr"
+  homepage "https://github.com/recyclarr/recyclarr"
+  version "{{VERSION}}"
+  license "MIT"
+
+  on_macos do
+    on_arm do
+      url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-osx-arm64.tar.xz"
+      sha256 "{{SHA_OSX_ARM64}}"
+    end
+    on_intel do
+      url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-osx-x64.tar.xz"
+      sha256 "{{SHA_OSX_X64}}"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-linux-arm64.tar.xz"
+      sha256 "{{SHA_LINUX_ARM64}}"
+    end
+    on_intel do
+      url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-linux-x64.tar.xz"
+      sha256 "{{SHA_LINUX_X64}}"
+    end
+  end
+
+  def install
+    bin.install "recyclarr"
+  end
+
+  test do
+    assert_match version.to_s, shell_output("#{bin}/recyclarr --version")
+  end
+end

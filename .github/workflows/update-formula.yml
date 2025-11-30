@@ -11,81 +11,28 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.RECYCLARR_APP_ID }}
+          private-key: ${{ secrets.RECYCLARR_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Calculate SHA256 hashes
-        run: |
-          VERSION="${{ inputs.version }}"
-          BASE_URL="https://github.com/recyclarr/recyclarr/releases/download/v${VERSION}"
-
-          echo "Fetching hashes for v${VERSION}..."
-
-          OSX_ARM64_SHA=$(curl -sL "${BASE_URL}/recyclarr-osx-arm64.tar.xz" | sha256sum | cut -d' ' -f1)
-          OSX_X64_SHA=$(curl -sL "${BASE_URL}/recyclarr-osx-x64.tar.xz" | sha256sum | cut -d' ' -f1)
-          LINUX_ARM64_SHA=$(curl -sL "${BASE_URL}/recyclarr-linux-arm64.tar.xz" | sha256sum | cut -d' ' -f1)
-          LINUX_X64_SHA=$(curl -sL "${BASE_URL}/recyclarr-linux-x64.tar.xz" | sha256sum | cut -d' ' -f1)
-
-          echo "OSX_ARM64_SHA=${OSX_ARM64_SHA}" >> $GITHUB_ENV
-          echo "OSX_X64_SHA=${OSX_X64_SHA}" >> $GITHUB_ENV
-          echo "LINUX_ARM64_SHA=${LINUX_ARM64_SHA}" >> $GITHUB_ENV
-          echo "LINUX_X64_SHA=${LINUX_X64_SHA}" >> $GITHUB_ENV
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Update formula
-        run: |
-          cat > Formula/recyclarr.rb << 'FORMULA'
-          class Recyclarr < Formula
-            desc "CLI tool to sync TRaSH Guides to Sonarr/Radarr"
-            homepage "https://github.com/recyclarr/recyclarr"
-            version "VERSION_PLACEHOLDER"
-            license "MIT"
-
-            on_macos do
-              on_arm do
-                url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-osx-arm64.tar.xz"
-                sha256 "OSX_ARM64_PLACEHOLDER"
-              end
-              on_intel do
-                url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-osx-x64.tar.xz"
-                sha256 "OSX_X64_PLACEHOLDER"
-              end
-            end
-
-            on_linux do
-              on_arm do
-                url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-linux-arm64.tar.xz"
-                sha256 "LINUX_ARM64_PLACEHOLDER"
-              end
-              on_intel do
-                url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-linux-x64.tar.xz"
-                sha256 "LINUX_X64_PLACEHOLDER"
-              end
-            end
-
-            def install
-              bin.install "recyclarr"
-            end
-
-            test do
-              assert_match version.to_s, shell_output("#{bin}/recyclarr --version")
-            end
-          end
-          FORMULA
-
-          sed -i "s/VERSION_PLACEHOLDER/${VERSION}/" Formula/recyclarr.rb
-          sed -i "s/OSX_ARM64_PLACEHOLDER/${OSX_ARM64_SHA}/" Formula/recyclarr.rb
-          sed -i "s/OSX_X64_PLACEHOLDER/${OSX_X64_SHA}/" Formula/recyclarr.rb
-          sed -i "s/LINUX_ARM64_PLACEHOLDER/${LINUX_ARM64_SHA}/" Formula/recyclarr.rb
-          sed -i "s/LINUX_X64_PLACEHOLDER/${LINUX_X64_SHA}/" Formula/recyclarr.rb
+        run: ./scripts/update-formula.sh "${{ inputs.version }}"
 
       - name: Commit and push
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "recyclarr[bot]"
+          git config user.email "recyclarr[bot]@users.noreply.github.com"
           git add Formula/recyclarr.rb
           git commit -m "Update recyclarr to ${{ inputs.version }}"
           git push
