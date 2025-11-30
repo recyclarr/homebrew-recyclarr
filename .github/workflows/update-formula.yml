@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Update Formula
+run-name: Update Formula to v${{ inputs.version }}
 
 on:
   workflow_dispatch:
@@ -34,5 +35,9 @@ jobs:
           git config user.name "recyclarr[bot]"
           git config user.email "recyclarr[bot]@users.noreply.github.com"
           git add Formula/recyclarr.rb
-          git commit -m "Update recyclarr to ${{ inputs.version }}"
-          git push
+          if git diff --cached --quiet; then
+            echo "Formula already up to date"
+          else
+            git commit -m "Update recyclarr to ${{ inputs.version }}"
+            git push
+          fi
