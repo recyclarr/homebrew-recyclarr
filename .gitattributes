@@ -1,0 +1,18 @@
+* text=auto
+
+# Ruby
+*.rb text diff=ruby
+
+# Shell
+*.sh text eol=lf
+
+# YAML
+*.yml text
+*.yaml text
+
+# Markdown
+*.md text diff=markdown
+
+# Binaries (none expected, but defensive)
+*.tar.xz binary
+*.zip binary
