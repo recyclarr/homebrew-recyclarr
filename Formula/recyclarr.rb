@@ -1,28 +1,28 @@
 class Recyclarr < Formula
   desc "CLI tool to sync TRaSH Guides to Sonarr/Radarr"
   homepage "https://github.com/recyclarr/recyclarr"
-  version "7.5.1"
+  version "7.5.2"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-osx-arm64.tar.xz"
-      sha256 "fc5196b60b9dc6d09125a1c080b34a8c11808f08032c11446184b5f9412f853c"
+      sha256 "050e1ea0fb1246843ff724b536bc39818aa1b5e88ed913a53d5c599b001638ca"
     end
     on_intel do
       url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-osx-x64.tar.xz"
-      sha256 "14827c3192b53406077363c66cf540fe6289618d07c59b78a0e2b49ee05721ab"
+      sha256 "cdae95a2432a3002d87893da2663d8a8b7d67ed177e54d2060067a1847d9fb28"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-linux-arm64.tar.xz"
-      sha256 "c19a35f24b22211405c85023a8e8c9d9c47b2dc5b8c8d58539ca9589f7bc3f8d"
+      sha256 "d166f61c842297299bf408ae138ec95b59fd85d4eae2f66d482c6ccfcaf00618"
     end
     on_intel do
       url "https://github.com/recyclarr/recyclarr/releases/download/v#{version}/recyclarr-linux-x64.tar.xz"
-      sha256 "f13623e27c3affad34baa0f282e19ad13101c90f26d5ec967c5a23b09fe365e9"
+      sha256 "6f38d5fa6f894d17604fab8aa71e6186cebc7a60235e7a3461a44546acd10978"
     end
   end
 
