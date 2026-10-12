@@ -28,6 +28,7 @@ class Recyclarr < Formula
 
   def install
     bin.install "recyclarr"
+    bin.install "recyclarr-server" if version >= "9"
   end
 
   test do
