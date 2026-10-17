@@ -31,6 +31,18 @@ class Recyclarr < Formula
     bin.install "recyclarr-server" if version >= "9"
   end
 
+  # v8 releases have no server binary
+  if version >= "9"
+    service do
+      run opt_bin/"recyclarr-server"
+      # Restart only after a failure; Homebrew maps `true` to systemd Restart=on-failure
+      on_macos { keep_alive successful_exit: false }
+      on_linux { keep_alive true }
+      log_path var/"log/recyclarr.log"
+      error_log_path var/"log/recyclarr.log"
+    end
+  end
+
   test do
     assert_match version.to_s, shell_output("#{bin}/recyclarr --version")
   end
