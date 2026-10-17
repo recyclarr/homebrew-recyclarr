@@ -38,7 +38,7 @@ class Recyclarr < Formula
       # Restart only after a failure; Homebrew maps `true` to systemd Restart=on-failure
       on_macos { keep_alive successful_exit: false }
       on_linux { keep_alive true }
-      log_path var/"log/recyclarr.log"
+      # The server writes its own log files; stderr keeps only crashes those files miss
       error_log_path var/"log/recyclarr.log"
     end
   end
